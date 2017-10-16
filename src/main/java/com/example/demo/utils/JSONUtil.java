@@ -12,11 +12,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
-/**
- * 
- * @author vic
- * @desc json util 
- */
 public class JSONUtil {
 	
 	private static Gson gson = null; 
