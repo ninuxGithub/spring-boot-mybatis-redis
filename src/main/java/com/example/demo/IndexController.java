@@ -13,12 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.entity.Person;
 import com.example.demo.entity.PersonExample;
 import com.example.demo.mapper.PersonMapper;
+import com.example.demo.service.PersonService;
 
 @RestController
 public class IndexController {
 
 	@Autowired
 	PersonMapper personMapper;
+
+	@Autowired
+	PersonService personService;
 
 	/**
 	 * 测试是否可以正常调用到数据库的数据， OK
@@ -33,13 +37,16 @@ public class IndexController {
 		return personMapper.selectByExample(pe);
 	}
 
+	/**
+	 * redis会将Person的结果保存到redis里面 ， 对应的key为：person-key
+	 * @return
+	 */
 	@RequestMapping("/redis/cachePersons")
 	@Cacheable(value = "person-key")
-	public List<Person> cachePersons() {
-		PersonExample pe = new PersonExample();
-		pe.setLimitStart(0);
-		pe.setCount(10);
-		return personMapper.selectByExample(pe);
+	public Person cachePersons() {
+		Person person = personService.findPersonById(1);
+		System.out.println("若下面没出现“无缓存的时候调用”字样且能打印出数据表示测试成功");
+		return person;
 	}
 
 	@RequestMapping(value = "/redis/uid")

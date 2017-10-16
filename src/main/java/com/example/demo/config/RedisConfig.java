@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +24,7 @@ import redis.clients.jedis.JedisPoolConfig;
 
 @Configuration
 @EnableAutoConfiguration
+@EnableCaching
 public class RedisConfig {
 
 	private static Logger logger = Logger.getLogger(RedisConfig.class);

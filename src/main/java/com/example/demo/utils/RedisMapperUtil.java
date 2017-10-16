@@ -13,7 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 
-public class JsonUtil2 {
+public class RedisMapperUtil {
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public static Map<String, TreeMap<String, Double>> readStringToMap(String content) {

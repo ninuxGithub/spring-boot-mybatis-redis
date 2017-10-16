@@ -1,7 +1,14 @@
 package com.example.demo.entity;
 
-public class Person {
-    private Integer id;
+import java.io.Serializable;
+
+public class Person implements Serializable{
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1091442491062511113L;
+
+	private Integer id;
 
     private String name;
 
