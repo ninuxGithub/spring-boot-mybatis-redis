@@ -69,15 +69,13 @@ public class RedisConfig {
 		RedisCacheManager rcm = new RedisCacheManager(redisTemplate);
 		// 设置缓存过期时间
 		rcm.setDefaultExpiration(60);// 秒
-		System.err.println("redis set expire 60 s");
+		System.err.println("redis cache time set expire 60 s");
 		return rcm;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Bean
 	public RedisTemplate<?, ?> getRedisTemplate() {
-		// RedisTemplate<?,?> template = new
-		// StringRedisTemplate(getConnectionFactory());
 		RedisTemplate<?, ?> template = new StringRedisTemplate(getConnectionFactory());
 		Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
 		ObjectMapper om = new ObjectMapper();
