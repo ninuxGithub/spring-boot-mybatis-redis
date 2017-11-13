@@ -1,4 +1,4 @@
-package com.example.demo.jimcache;
+package com.example.demo.cache;
 
 import java.lang.reflect.Method;
 import java.util.Set;

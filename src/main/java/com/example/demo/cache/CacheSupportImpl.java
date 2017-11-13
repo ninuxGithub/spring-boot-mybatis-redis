@@ -1,4 +1,4 @@
-package com.example.demo.jimcache;
+package com.example.demo.cache;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -62,6 +62,7 @@ public class CacheSupportImpl implements CacheSupport, InvocationRegistry {
 
 	@PostConstruct
 	public void initialize() {
+		logger.info("initialize cacheMap");
 		cacheToInvocationsMap = new ConcurrentHashMap<String, Set<CachedInvocation>>(cacheManager.getCacheNames().size());
 		for (final String cacheName : cacheManager.getCacheNames()) {
 			cacheToInvocationsMap.put(cacheName, new CopyOnWriteArraySet<CachedInvocation>());

@@ -1,4 +1,4 @@
-package com.example.demo.jimcache;
+package com.example.demo.cache;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -77,7 +77,11 @@ public class CachingAnnotationsAspect {
 		for (Cacheable cacheables : annotations) {
 			cacheSet.addAll(Arrays.asList(cacheables.value()));
 		}
-		cacheRefreshSupport.registerInvocation(joinPoint.getTarget(), method, joinPoint.getArgs(), cacheSet);
+		try {
+			cacheRefreshSupport.registerInvocation(joinPoint.getTarget(), method, joinPoint.getArgs(), cacheSet);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return joinPoint.proceed();
 
 	}

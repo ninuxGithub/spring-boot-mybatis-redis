@@ -17,7 +17,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 
-import com.example.demo.jimcache.CustomizedRedisCacheManager;
+import com.example.demo.cache.CustomizedRedisCacheManager;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -71,7 +71,7 @@ public class RedisConfig {
 		CustomizedRedisCacheManager cacheManager= new CustomizedRedisCacheManager(redisTemplate);
 	    cacheManager.setDefaultExpiration(60);
 	    Map<String,Long> expiresMap=new HashMap<>();
-	    expiresMap.put("Product",5L);
+	    expiresMap.put("Person",5L);
 	    cacheManager.setExpires(expiresMap);
 	    return cacheManager;
 	    

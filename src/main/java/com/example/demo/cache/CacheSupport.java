@@ -1,4 +1,4 @@
-package com.example.demo.jimcache;
+package com.example.demo.cache;
 
 /**
  * 主动刷新缓存接口
