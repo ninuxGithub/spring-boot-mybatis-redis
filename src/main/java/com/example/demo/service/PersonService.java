@@ -10,8 +10,10 @@ import com.example.demo.mapper.PersonMapper;
 public class PersonService {
 	@Autowired
 	PersonMapper personMapper;
+	
 
 	public Person findPersonById(Integer id) {
 		return personMapper.selectByPrimaryKey(id);
 	}
+	
 }

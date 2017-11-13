@@ -1,6 +1,8 @@
 package com.example.demo.config;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -10,12 +12,12 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 
+import com.example.demo.jimcache.CustomizedRedisCacheManager;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -66,11 +68,18 @@ public class RedisConfig {
 	@SuppressWarnings("rawtypes")
 	@Bean
 	public CacheManager cacheManager(RedisTemplate redisTemplate) {
-		RedisCacheManager rcm = new RedisCacheManager(redisTemplate);
-		// 设置缓存过期时间
-		rcm.setDefaultExpiration(60);// 秒
-		System.err.println("redis cache time set expire 60 s");
-		return rcm;
+		CustomizedRedisCacheManager cacheManager= new CustomizedRedisCacheManager(redisTemplate);
+	    cacheManager.setDefaultExpiration(60);
+	    Map<String,Long> expiresMap=new HashMap<>();
+	    expiresMap.put("Product",5L);
+	    cacheManager.setExpires(expiresMap);
+	    return cacheManager;
+	    
+//		RedisCacheManager rcm = new RedisCacheManager(redisTemplate);
+//		// 设置缓存过期时间
+//		rcm.setDefaultExpiration(60);// 秒
+//		System.err.println("redis cache time set expire 60 s");
+//		return rcm;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
