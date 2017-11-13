@@ -32,6 +32,55 @@ public class CacheSupportImpl implements CacheSupport, InvocationRegistry {
 	@Autowired
 	private CacheManager cacheManager;
 
+	@PostConstruct
+	public void initialize() {
+		logger.info("initialize cacheMap");
+		cacheToInvocationsMap = new ConcurrentHashMap<String, Set<CachedInvocation>>(
+				cacheManager.getCacheNames().size());
+		for (final String cacheName : cacheManager.getCacheNames()) {
+			cacheToInvocationsMap.put(cacheName, new CopyOnWriteArraySet<CachedInvocation>());
+		}
+	}
+
+	@Override
+	public void registerInvocation(Object targetBean, Method targetMethod, Object[] arguments,
+			Set<String> annotatedCacheNames) {
+
+		StringBuilder sb = new StringBuilder();
+		for (Object obj : arguments) {
+			sb.append(obj.toString());
+		}
+
+		Object key = sb.toString();
+
+		final CachedInvocation invocation = new CachedInvocation(key, targetBean, targetMethod, arguments);
+		for (final String cacheName : annotatedCacheNames) {
+			String[] cacheParams = cacheName.split("#");
+			String realCacheName = cacheParams[0];
+			if (!cacheToInvocationsMap.containsKey(realCacheName)) {
+				this.initialize();
+			}
+			cacheToInvocationsMap.get(realCacheName).add(invocation);
+		}
+	}
+
+	@Override
+	public void refreshCache(String cacheName) {
+		this.refreshCacheByKey(cacheName, null);
+	}
+
+	@Override
+	public void refreshCacheByKey(String cacheName, String cacheKey) {
+		System.err.println("refreshCache: "+ cacheName);
+		if (cacheToInvocationsMap.get(cacheName) != null) {
+			for (final CachedInvocation invocation : cacheToInvocationsMap.get(cacheName)) {
+				if (!StringUtils.isBlank(cacheKey) && invocation.getKey().toString().equals(cacheKey)) {
+					refreshCache(invocation, cacheName);
+				}
+			}
+		}
+	}
+
 	private void refreshCache(CachedInvocation invocation, String cacheName) {
 
 		boolean invocationSuccess;
@@ -57,53 +106,6 @@ public class CacheSupportImpl implements CacheSupport, InvocationRegistry {
 		invoker.setTargetMethod(invocation.getTargetMethod().getName());
 		invoker.prepare();
 		return invoker.invoke();
-	}
-
-
-	@PostConstruct
-	public void initialize() {
-		logger.info("initialize cacheMap");
-		cacheToInvocationsMap = new ConcurrentHashMap<String, Set<CachedInvocation>>(cacheManager.getCacheNames().size());
-		for (final String cacheName : cacheManager.getCacheNames()) {
-			cacheToInvocationsMap.put(cacheName, new CopyOnWriteArraySet<CachedInvocation>());
-		}
-	}
-
-	@Override
-	public void registerInvocation(Object targetBean, Method targetMethod, Object[] arguments, Set<String> annotatedCacheNames) {
-
-		StringBuilder sb = new StringBuilder();
-		for (Object obj : arguments) {
-			sb.append(obj.toString());
-		}
-
-		Object key = sb.toString();
-
-		final CachedInvocation invocation = new CachedInvocation(key, targetBean, targetMethod, arguments);
-		for (final String cacheName : annotatedCacheNames) {
-			String[] cacheParams=cacheName.split("#");
-			String realCacheName = cacheParams[0];
-			if(!cacheToInvocationsMap.containsKey(realCacheName)) {
-				this.initialize();
-			}
-			cacheToInvocationsMap.get(realCacheName).add(invocation);
-		}
-	}
-
-	@Override
-	public void refreshCache(String cacheName) {
-		this.refreshCacheByKey(cacheName,null);
-	}
-
-	@Override
-	public void refreshCacheByKey(String cacheName, String cacheKey) {
-		if (cacheToInvocationsMap.get(cacheName) != null) {
-			for (final CachedInvocation invocation : cacheToInvocationsMap.get(cacheName)) {
-				if(!StringUtils.isBlank(cacheKey)&&invocation.getKey().toString().equals(cacheKey)) {
-					refreshCache(invocation, cacheName);
-				}
-			}
-		}
 	}
 
 }

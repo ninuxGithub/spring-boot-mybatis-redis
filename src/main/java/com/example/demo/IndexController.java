@@ -39,12 +39,23 @@ public class IndexController {
 	}
 
 	/**
+	 * @Cacheable(value = "person-key")
 	 * redis会将Person的结果保存到redis里面 ， 对应的key为：person-key
+	 * 
+	 * 
+	 * 在采用了
+	 * @Cacheable(value = "Person#5#2", key="#id")
+	 * 
+	 * 之后会在缓存实现的前2秒时间主动的刷新缓存，重置失效的时间 (5s)，然缓存一直可以使用
+	 * 
+	 * link:https://www.cnblogs.com/ASPNET2008/p/6511500.html
+	 * 
 	 * @return
 	 */
-	// @Cacheable(value = "person-key")
+	
+	
 	@RequestMapping("/redis/cachePersons/{id}")
-	@Cacheable(value = "Person#5#2", key="#id")
+	@Cacheable(value = "Person#5#2"/*方法二*/ , key="#id")
 	public Person cachePersons(@PathVariable("id") Integer id) {
 		Person person = personService.findPersonById(id);
 		System.out.println("若下面没出现“无缓存的时候调用”字样且能打印出数据表示测试成功");

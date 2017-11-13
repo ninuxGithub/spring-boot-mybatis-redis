@@ -1,8 +1,6 @@
 package com.example.demo.config;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -70,16 +68,11 @@ public class RedisConfig {
 	public CacheManager cacheManager(RedisTemplate redisTemplate) {
 		CustomizedRedisCacheManager cacheManager= new CustomizedRedisCacheManager(redisTemplate);
 	    cacheManager.setDefaultExpiration(60);
-	    Map<String,Long> expiresMap=new HashMap<>();
-	    expiresMap.put("Person",5L);
-	    cacheManager.setExpires(expiresMap);
+
+//	    Map<String,Long> expiresMap=new HashMap<>();
+//	    expiresMap.put("Person",5L);//	    方法一
+//	    cacheManager.setExpires(expiresMap);
 	    return cacheManager;
-	    
-//		RedisCacheManager rcm = new RedisCacheManager(redisTemplate);
-//		// 设置缓存过期时间
-//		rcm.setDefaultExpiration(60);// 秒
-//		System.err.println("redis cache time set expire 60 s");
-//		return rcm;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
